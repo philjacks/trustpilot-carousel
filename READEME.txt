@@ -1,0 +1,11 @@
+*** CURRENTLY UN-STABLE ***
+
+> Issues with responsiveness 
+  (1. doesn't always fit carouselOuter to correct size
+   2. When enlarging window the last card has huge gap after it
+  )
+
+> Weird glitch when refreshing page
+  (the 'card.style.left' varies and makes carousel 'un-scrollable')
+
+  The responsive issues are OK overall but the glitch causes instability.
