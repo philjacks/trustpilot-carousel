@@ -1,93 +1,62 @@
-// Carousel selectors
+const carouselCont = document.querySelector(".carousel-container");
+const carouselSlider = document.querySelector(".carousel-slider");
+const cards = document.querySelectorAll(".card");
+
 const prevArrow = document.getElementById("prev-arrow");
 const nextArrow = document.getElementById("next-arrow");
-const carouselTrack = document.querySelector(".carousel-track");
-const carouselOuter = document.querySelector(".carousel-outer");
-const cards = Array.from(carouselTrack.children);
 
-// Obtain width of the first card
-const cardWidth = cards[0].getBoundingClientRect().width;
+let counter = 1;
+const width = cards[0].clientWidth + 16;
 
-const slidePosition = (card, index) => {
-  card.style.left = cardWidth * index + "px";
-};
+carouselSlider.style.transform = `translateX(-${width * counter}px`;
 
-cards.forEach(slidePosition);
-
-// Disable arrows if at either end of carousel
-const nextArrowInactive = (card) => {
-  if (!card.classList.contains("last-card")) {
-    nextArrow.classList.remove("arrow-inactive");
-  } else if (card.classList.contains("last-card")) {
-    nextArrow.classList.add("arrow-inactive");
-  }
-};
-
-const prevArrowInactive = (card) => {
-  if (!card.classList.contains("first-card")) {
-    prevArrow.classList.remove("arrow-inactive");
-  } else if (card.classList.contains("first-card")) {
-    prevArrow.classList.add("arrow-inactive");
-  }
-};
-
-// Move between cards
-const moveToCard = (track, currentCard, targetCard) => {
-  track.style.transform = `translateX(-${targetCard.style.left})`;
-  currentCard.classList.remove("current-card");
-  targetCard.classList.add("current-card");
-  prevArrowInactive(targetCard);
-  nextArrowInactive(targetCard);
-};
-
-// Next arrow functionality
-nextArrow.addEventListener("click", (e) => {
-  const currentCard = carouselTrack.querySelector(".current-card");
-  const nextCard = currentCard.nextElementSibling;
-
-  moveToCard(carouselTrack, currentCard, nextCard);
+prevArrow.addEventListener("click", () => {
+  if (counter <= 0) return;
+  carouselSlider.style.transition = "transform 0.4s ease-in-out";
+  counter--;
+  carouselSlider.style.transform = "translateX(" + -width * counter + "px)";
 });
 
-// Previous arrow functionality
-prevArrow.addEventListener("click", (e) => {
-  const currentCard = carouselTrack.querySelector(".current-card");
-  const prevCard = currentCard.previousElementSibling;
-
-  moveToCard(carouselTrack, currentCard, prevCard);
+nextArrow.addEventListener("click", () => {
+  if (counter >= cards.length - 2) return;
+  carouselSlider.style.transition = "transform 0.4s ease-in-out";
+  counter++;
+  carouselSlider.style.transform = "translateX(" + -width * counter + "px)";
 });
 
-// Making Carousel Responsive
-const responsive1 = (width) => {
-  if (width.matches) {
-    carouselOuter.style.width = `950px`;
-    cards[3].classList.remove("last-card");
-    cards[4].classList.add("last-card");
+carouselSlider.addEventListener("transitionend", () => {
+  if (cards[counter].id === "last-clone") {
+    carouselSlider.style.transition = "none";
+    counter = cards.length - 3;
+    carouselSlider.style.transform = "translateX(" + -width * counter + "px)";
+  }
+
+  if (cards[counter].id === "first-clone") {
+    carouselSlider.style.transition = "none";
+    counter = cards.length - counter - 1;
+    carouselSlider.style.transform = "translateX(" + -width * counter + "px)";
+  }
+});
+
+const reduceCarouselSize1 = (media) => {
+  if (media.matches) {
+    carouselCont.style.width = `950px`;
   } else {
-    carouselOuter.style.width = `1425px`;
-    cards[4].classList.remove("last-card");
-    cards[3].classList.add("last-card");
-    nextArrowInactive(cards);
+    carouselCont.style.width = `1425px`;
   }
 };
-const responsive2 = (width) => {
-  if (width.matches) {
-    carouselOuter.style.width = `475px`;
-    cards[4].classList.remove("last-card");
-    cards[5].classList.add("last-card");
+const reduceCarouselSize2 = (media) => {
+  if (media.matches) {
+    carouselCont.style.width = `475px`;
   } else {
-    carouselOuter.style.width = `1425px`;
-    cards[5].classList.remove("last-card");
-    cards[4].classList.add("last-card");
-    nextArrowInactive(cards);
+    carouselCont.style.width = `950px`;
   }
 };
 
 const media1 = window.matchMedia(`(max-width: 1550px)`);
-const media2 = window.matchMedia(`(max-width: 1073px)`);
+media1.addListener(reduceCarouselSize1);
+reduceCarouselSize1(media1);
 
-media1.addEventListener("change", () => {
-  responsive1(media1);
-});
-media2.addEventListener("change", () => {
-  responsive2(media2);
-});
+const media2 = window.matchMedia(`(max-width: 1070px)`);
+media2.addListener(reduceCarouselSize2);
+reduceCarouselSize2(media2);
