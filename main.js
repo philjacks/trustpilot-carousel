@@ -1,3 +1,5 @@
+// Truspilot Carousel
+
 const carouselCont = document.querySelector(".carousel-container");
 const carouselSlider = document.querySelector(".carousel-slider");
 const cards = document.querySelectorAll(".card");
@@ -52,6 +54,8 @@ const reduceCarouselSize2 = (media) => {
     carouselCont.style.width = `950px`;
   }
 };
+
+// Reduce amount of cards for responsiveness
 
 const media1 = window.matchMedia(`(max-width: 1550px)`);
 media1.addListener(reduceCarouselSize1);
